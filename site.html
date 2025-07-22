@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI Agents for Real Estate</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+      color: #1F2937;
+      height: 100vh;
+      width: 100vw;
+      display: flex;
+    }
+
+    .page-wrapper {
+      display: flex;
+      width: 100vw;
+      height: 100vh;
+    }
+
+    /* Left Panel */
+    .left-panel {
+      flex: 1;
+      background: #fdfaf6;
+      padding: 60px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+    }
+
+    .logo-container {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .logo-container img {
+      max-width: 180px;
+      height: auto;
+      display: block;
+    }
+
+    .left-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 40px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .left-card h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .left-card p {
+      font-size: 1rem;
+      margin-bottom: 30px;
+      color: #4B5563;
+    }
+
+    .left-card .form label {
+      display: block;
+      margin-top: 20px;
+      font-size: 0.95rem;
+      font-weight: 600;
+    }
+
+    .left-card input,
+    .left-card textarea {
+      width: 100%;
+      margin-top: 8px;
+      padding: 12px;
+      border: 1px solid #D1D5DB;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      background-color: #fff;
+      font-family: inherit;
+    }
+
+    .left-card textarea {
+      height: 100px;
+      resize: vertical;
+    }
+
+    .left-card .btn {
+      margin-top: 30px;
+      width: 100%;
+      padding: 12px;
+      background-color: #111827;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .left-card .btn:hover {
+      background-color: #1F2937;
+    }
+
+    .left-card .btn:disabled {
+      background-color: #6B7280;
+      cursor: not-allowed;
+    }
+
+    .msg {
+      background: white;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      margin-top: 30px;
+      font-size: 1rem;
+      color: #111827;
+      text-align: center;
+    }
+
+    .error {
+      background: #FEF2F2;
+      border: 1px solid #FECACA;
+      color: #DC2626;
+    }
+
+    .success {
+      background: #F0FDF4;
+      border: 1px solid #BBF7D0;
+      color: #166534;
+    }
+
+    /* Right Panel */
+    .right-panel {
+      flex: 1;
+      background: #f4f1eb;
+      padding: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .demo-card {
+      max-width: 100%;
+      width: 100%;
+    }
+
+    /* Chat Box */
+    .chat {
+      background: white;
+      border-radius: 16px;
+      padding: 30px;
+      max-height: 300px;
+      overflow-y: auto;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      width: 100%;
+    }
+
+    .assistant-msg {
+      background: #F9FAFB;
+      padding: 14px 18px;
+      margin-bottom: 15px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      color: #111827;
+      border: 1px solid #E5E7EB;
+      opacity: 0;
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    .delay-1 { animation-delay: 0.8s; }
+    .delay-2 { animation-delay: 1.6s; }
+    .delay-3 { animation-delay: 2.4s; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 768px) {
+      .page-wrapper {
+        flex-direction: column;
+      }
+      
+      .left-panel,
+      .right-panel {
+        flex: none;
+        padding: 40px 20px;
+      }
+    }
+  </style>
+
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+  <div class="page-wrapper">
+    <!-- Left Panel -->
+    <div class="left-panel">
+      <!-- Logo -->
+      <div class="logo-container">
+        <svg width="180" height="180" viewBox="0 0 375 375" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M279.169 62.5H95.8313L43.1625 187.5L95.8313 312.5H279.169L331.838 187.5L279.169 62.5Z" stroke="#1F2937" stroke-width="4" fill="transparent"/>
+          <text x="187.5" y="195.5" font-size="36" font-family="'Libre Baskerville', Georgia, serif" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1F2937">MAXXIA</text>
+        </svg>
+      </div>
+
+      <div class="left-card">
+        <h1>Build Your Custom AI Agent</h1>
+        <p>We help real estate teams build AI agents tailored to your leads and workflow. Book a consultation and tell us what tasks you want automated.</p>
+        
+        <!-- Consultation Form -->
+        <form id="consult-form" class="form">
+          <label for="name">Your Name</label>
+          <input name="user_name" type="text" id="name" placeholder="John Smith" required />
+
+          <label for="email">Email</label>
+          <input name="user_email" type="email" id="email" placeholder="you@email.com" required />
+
+          <label for="tasks">What tasks should the AI agent help with?</label>
+          <textarea name="user_tasks" id="tasks" placeholder="e.g. lead qualification, booking appointments…" required></textarea>
+
+          <button type="button" id="consult-btn" class="btn">Book Consultation</button>
+        </form>
+
+        <!-- Confirmation Message -->
+        <div id="consult-confirm" class="msg" style="display:none;"></div>
+      </div>
+    </div>
+
+    <!-- Right Panel (Demo Chat) -->
+    <div class="right-panel">
+      <div class="demo-card">
+        <div class="chat">
+          <div class="assistant-msg delay-1">Are you looking to buy or sell?</div>
+          <div class="assistant-msg delay-2">What's your budget, preferred location, and timeframe?</div>
+          <div class="assistant-msg delay-3">Thanks! I've sent your info to your assigned agent and scheduled a call.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Initialize EmailJS when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('🟢 Page loaded, initializing EmailJS');
+      
+      // Initialize EmailJS with your public key
+      emailjs.init("1RUFavRH4cgcsJDaJ");
+      
+      const btn = document.getElementById('consult-btn');
+      const form = document.getElementById('consult-form');
+      const confirmDiv = document.getElementById('consult-confirm');
+      
+      console.log('👆 consult-btn element:', btn);
+      console.log('📝 form element:', form);
+      
+      // Attach click handler
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
+        console.log('🔘 Book Consultation clicked');
+        
+        // Validate form before sending
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const tasks = document.getElementById('tasks').value.trim();
+        
+        if (!name || !email || !tasks) {
+          showMessage('Please fill out all required fields.', 'error');
+          return;
+        }
+        
+        // Basic email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+          showMessage('Please enter a valid email address.', 'error');
+          return;
+        }
+        
+        // Disable button and show loading state
+        btn.disabled = true;
+        btn.textContent = 'Sending...';
+        
+        const serviceID = 'service_6oeyi4x';
+        const templateID = 'template_32i8gwc';
+        
+        console.log('📨 Sending via EmailJS:', serviceID, templateID);
+        
+        // Create form data object with all template variables
+        const formData = {
+          user_name: name,
+          user_email: email,
+          user_tasks: tasks,
+          request_date: new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          }),
+          to_name: 'Real Estate Team',
+          from_name: name
+        };
+        
+        console.log('📋 Form data:', formData);
+        
+        // Send email using EmailJS
+        emailjs.send(serviceID, templateID, formData)
+          .then(function(response) {
+            console.log('✅ Email sent successfully:', response.status, response.text);
+            
+            // Hide form and show success message
+            form.style.display = 'none';
+            showMessage('✅ Thanks! We\'ll reach out shortly to schedule your consultation.', 'success');
+            
+          })
+          .catch(function(error) {
+            console.error('🔴 EmailJS error:', error);
+            
+            // Re-enable button
+            btn.disabled = false;
+            btn.textContent = 'Book Consultation';
+            
+            // Show error message
+            let errorMessage = 'Oops—something went wrong. Please try again or contact us directly.';
+            if (error.text) {
+              errorMessage += ' Error: ' + error.text;
+            }
+            showMessage(errorMessage, 'error');
+          });
+      });
+      
+      function showMessage(message, type) {
+        confirmDiv.textContent = message;
+        confirmDiv.className = 'msg ' + type;
+        confirmDiv.style.display = 'block';
+        
+        // Scroll to message
+        confirmDiv.scrollIntoView({ behavior: 'smooth' });
+      }
+    });
+  </script>
+</body>
+</html> 
