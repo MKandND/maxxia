@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Schedule a Call – MAXXIA AI</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f4f1eb;
+      color: #0f172a;
+    }
+
+    .wrapper {
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+
+    .back-link {
+      font-size: 0.85rem;
+      color: #6b7280;
+      text-decoration: none;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    h1 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 2rem;
+      margin: 16px 0 8px;
+    }
+
+    p.lead {
+      color: #4b5563;
+      font-size: 0.98rem;
+      max-width: 520px;
+    }
+
+    form {
+      margin-top: 24px;
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      border: 1px solid #e5e7eb;
+    }
+
+    label {
+      display:block;
+      font-size:0.9rem;
+      font-weight:500;
+      margin-top:12px;
+    }
+
+    input, textarea, select {
+      width:100%;
+      margin-top:6px;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #d1d5db;
+      font-family:inherit;
+      font-size:0.9rem;
+    }
+
+    textarea { min-height:100px; }
+
+    .row {
+      display:flex;
+      gap:12px;
+    }
+
+    .row > div { flex:1; }
+
+    button {
+      margin-top:18px;
+      padding:10px 18px;
+      border-radius:999px;
+      border:none;
+      background:#111827;
+      color:#f9fafb;
+      cursor:pointer;
+      font-size:0.95rem;
+    }
+
+    button:disabled { opacity:0.5; cursor:not-allowed; }
+
+    .msg {
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:8px;
+      font-size:0.9rem;
+    }
+    .msg.success { background:#ecfdf3; border:1px solid #4ade80; color:#14532d; }
+    .msg.error { background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+  <div class="wrapper">
+    <a href="site.html#pricing" class="back-link">← Back to site</a>
+
+    <h1>Schedule a MAXXIA call</h1>
+    <p class="lead">
+      Pick a date and preferred time. We’ll confirm over email from
+      <strong>mk.businessxem@gmail.com</strong> and share a calendar invite.
+    </p>
+
+    <form id="schedule-form">
+      <label>Your Name</label>
+      <input type="text" id="sched-name" required>
+
+      <label>Email</label>
+      <input type="email" id="sched-email" required>
+
+      <label>Which plan are you interested in?</label>
+      <select id="sched-plan">
+        <option value="Not specified">Not sure yet</option>
+        <option value="Starter">Starter – Solo Agent</option>
+        <option value="Pro Team">Pro Team – Teams</option>
+        <option value="Growth">Growth – Teams & Brokerages</option>
+      </select>
+
+      <div class="row">
+        <div>
+          <label>Preferred date</label>
+          <input type="date" id="sched-date" required>
+        </div>
+        <div>
+          <label>Preferred time</label>
+          <input type="time" id="sched-time" required>
+        </div>
+      </div>
+
+      <label>Anything else we should know?</label>
+      <textarea id="sched-notes" placeholder="Team size, markets, lead sources…"></textarea>
+
+      <button type="button" id="sched-btn">Request call</button>
+      <div id="sched-confirm" class="msg" style="display:none;"></div>
+    </form>
+  </div>
+
+<script>
+  emailjs.init("1RUFavRH4cgcsJDaJ");
+
+  function getQueryParam(name) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(name);
+  }
+
+  // If ?plan= was passed (from a pricing or plan page), pre-select it
+  document.addEventListener("DOMContentLoaded", () => {
+    const plan = getQueryParam("plan");
+    if (plan) {
+      const select = document.getElementById("sched-plan");
+      const decoded = decodeURIComponent(plan).replace(/\+/g, " ");
+      for (const opt of select.options) {
+        if (opt.value === decoded) {
+          select.value = decoded;
+          break;
+        }
+      }
+    }
+  });
+
+  const sBtn = document.getElementById("sched-btn");
+  const sConfirm = document.getElementById("sched-confirm");
+
+  sBtn.addEventListener("click", () => {
+    const name = document.getElementById("sched-name").value.trim();
+    const email = document.getElementById("sched-email").value.trim();
+    const plan = document.getElementById("sched-plan").value;
+    const date = document.getElementById("sched-date").value;
+    const time = document.getElementById("sched-time").value;
+    const notes = document.getElementById("sched-notes").value.trim();
+
+    if (!name || !email || !date || !time) {
+      sConfirm.textContent = "Name, email, date, and time are required.";
+      sConfirm.className = "msg error";
+      sConfirm.style.display = "block";
+      return;
+    }
+
+    sBtn.disabled = true;
+    sBtn.textContent = "Sending...";
+
+    const details = `
+Requested plan: ${plan}
+Preferred date: ${date}
+Preferred time: ${time}
+
+Notes:
+${notes || "None"}
+    `;
+
+    emailjs
+      .send("service_6oeyi4x", "template_32i8gwc", {
+        user_name: name,
+        user_email: email,
+        user_tasks: details,
+        selected_plan: plan,
+        request_source: "Schedule call page"
+      })
+      .then(() => {
+        sConfirm.textContent = "Got it! We'll confirm the time by email.";
+        sConfirm.className = "msg success";
+        sConfirm.style.display = "block";
+        sBtn.style.display = "none";
+      })
+      .catch(() => {
+        sBtn.disabled = false;
+        sBtn.textContent = "Request call";
+        sConfirm.textContent = "Something went wrong. Please try again.";
+        sConfirm.className = "msg error";
+        sConfirm.style.display = "block";
+      });
+  });
+</script>
+</body>
+</html>

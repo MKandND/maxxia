@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact – MAXXIA AI</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f4f1eb;
+      color: #0f172a;
+    }
+
+    .wrapper {
+      max-width: 800px;
+      margin: 60px auto;
+      padding: 0 20px;
+    }
+
+    .back-link {
+      font-size: 0.85rem;
+      color: #6b7280;
+      text-decoration: none;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    h1 {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 2rem;
+      margin: 16px 0 8px;
+    }
+
+    p.lead {
+      color: #4b5563;
+      font-size: 0.98rem;
+      max-width: 520px;
+    }
+
+    form {
+      margin-top: 24px;
+      background: #ffffff;
+      padding: 24px;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      border: 1px solid #e5e7eb;
+    }
+
+    label {
+      display:block;
+      font-size:0.9rem;
+      font-weight:500;
+      margin-top:12px;
+    }
+
+    input, textarea {
+      width:100%;
+      margin-top:6px;
+      padding:10px;
+      border-radius:8px;
+      border:1px solid #d1d5db;
+      font-family:inherit;
+      font-size:0.9rem;
+    }
+
+    textarea { min-height:120px; }
+
+    button {
+      margin-top:18px;
+      padding:10px 18px;
+      border-radius:999px;
+      border:none;
+      background:#111827;
+      color:#f9fafb;
+      cursor:pointer;
+      font-size:0.95rem;
+    }
+
+    button:disabled { opacity:0.5; cursor:not-allowed; }
+
+    .msg {
+      margin-top:12px;
+      padding:10px 12px;
+      border-radius:8px;
+      font-size:0.9rem;
+    }
+    .msg.success { background:#ecfdf3; border:1px solid #4ade80; color:#14532d; }
+    .msg.error { background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+</head>
+<body>
+  <div class="wrapper">
+    <a href="site.html#pricing" class="back-link">← Back to site</a>
+
+    <h1>Contact MAXXIA</h1>
+    <p class="lead">
+      Tell us a bit about your team, market, and current lead flow. We’ll reply directly from
+      <strong>mk.businessxem@gmail.com</strong> with next steps.
+    </p>
+
+    <form id="contact-form">
+      <label>Your Name</label>
+      <input type="text" id="contact-name" required>
+
+      <label>Email</label>
+      <input type="email" id="contact-email" required>
+
+      <label>Business / Team Name</label>
+      <input type="text" id="contact-business" placeholder="Optional">
+
+      <label>How can we help?</label>
+      <textarea id="contact-message" required></textarea>
+
+      <button type="button" id="contact-btn">Send message</button>
+      <div id="contact-confirm" class="msg" style="display:none;"></div>
+    </form>
+  </div>
+
+<script>
+  emailjs.init("1RUFavRH4cgcsJDaJ");
+
+  const cBtn = document.getElementById("contact-btn");
+  const cConfirm = document.getElementById("contact-confirm");
+
+  cBtn.addEventListener("click", () => {
+    const name = document.getElementById("contact-name").value.trim();
+    const email = document.getElementById("contact-email").value.trim();
+    const business = document.getElementById("contact-business").value.trim();
+    const message = document.getElementById("contact-message").value.trim();
+
+    if (!name || !email || !message) {
+      cConfirm.textContent = "Please fill out name, email, and message.";
+      cConfirm.className = "msg error";
+      cConfirm.style.display = "block";
+      return;
+    }
+
+    cBtn.disabled = true;
+    cBtn.textContent = "Sending...";
+
+    const combined = `
+Business / Team: ${business || "Not specified"}
+
+Message:
+${message}
+    `;
+
+    emailjs
+      .send("service_6oeyi4x", "template_32i8gwc", {
+        user_name: name,
+        user_email: email,
+        user_tasks: combined,
+        selected_plan: "Contact page",
+        request_source: "Contact page form"
+      })
+      .then(() => {
+        cConfirm.textContent = "Thanks! We'll reply from mk.businessxem@gmail.com soon.";
+        cConfirm.className = "msg success";
+        cConfirm.style.display = "block";
+        cBtn.style.display = "none";
+      })
+      .catch(() => {
+        cBtn.disabled = false;
+        cBtn.textContent = "Send message";
+        cConfirm.textContent = "Something went wrong. Please try again.";
+        cConfirm.className = "msg error";
+        cConfirm.style.display = "block";
+      });
+  });
+</script>
+</body>
+</html>
