@@ -4,17 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>AI Agents for Real Estate</title>
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap');
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+  <!-- Favicons -->
+  <link rel="icon" type="image/png" href="favicon.png">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Inter:wght@400;500;600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      font-family: 'Libre Baskerville', Georgia, 'Times New Roman', serif;
+      font-family: 'Libre Baskerville', serif;
       color: #1F2937;
       height: 100vh;
       width: 100vw;
@@ -27,331 +28,563 @@
       height: 100vh;
     }
 
-    /* Left Panel */
+    /* LEFT PANEL ------------------------------------------ */
     .left-panel {
       flex: 1;
       background: #fdfaf6;
       padding: 60px 20px;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
       align-items: center;
     }
 
-    .logo-container {
-      margin-bottom: 30px;
-      text-align: center;
-    }
-
-    .logo-container img {
-      max-width: 180px;
-      height: auto;
-      display: block;
-    }
+    .logo-container { margin-bottom: 30px; }
 
     .left-card {
       background: #ffffff;
       border-radius: 16px;
       padding: 40px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
       max-width: 500px;
       width: 100%;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
-    .left-card h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-bottom: 20px;
-    }
+    .left-card h1 { font-size: 2rem; font-weight: 700; margin-bottom: 20px; }
+    .left-card p { font-size: 1rem; color: #4B5563; margin-bottom: 20px; }
+    .left-card label { font-size: 0.95rem; font-weight: 600; }
 
-    .left-card p {
-      font-size: 1rem;
-      margin-bottom: 30px;
-      color: #4B5563;
-    }
-
-    .left-card .form label {
-      display: block;
-      margin-top: 20px;
-      font-size: 0.95rem;
-      font-weight: 600;
+    .plan-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #1d4ed8;
+      font-size: 0.8rem;
+      margin-bottom: 16px;
     }
 
     .left-card input,
     .left-card textarea {
-      width: 100%;
-      margin-top: 8px;
-      padding: 12px;
-      border: 1px solid #D1D5DB;
-      border-radius: 8px;
-      font-size: 0.95rem;
-      background-color: #fff;
-      font-family: inherit;
+      width: 100%; padding: 12px; margin-top: 8px;
+      border: 1px solid #D1D5DB; border-radius: 8px; font-family: inherit;
     }
 
-    .left-card textarea {
-      height: 100px;
-      resize: vertical;
-    }
+    .left-card textarea { height: 100px; }
 
     .left-card .btn {
-      margin-top: 30px;
-      width: 100%;
-      padding: 12px;
-      background-color: #111827;
-      color: white;
+      margin-top: 30px; width: 100%;
+      padding: 12px; background: #111827; color: #fff;
+      border-radius: 8px; cursor: pointer;
       border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-    }
-
-    .left-card .btn:hover {
-      background-color: #1F2937;
-    }
-
-    .left-card .btn:disabled {
-      background-color: #6B7280;
-      cursor: not-allowed;
     }
 
     .msg {
-      background: white;
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      margin-top: 30px;
-      font-size: 1rem;
-      color: #111827;
-      text-align: center;
+      margin-top: 16px;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.9rem;
     }
+    .msg.success { background:#ecfdf3; border:1px solid #4ade80; color:#14532d; }
+    .msg.error { background:#fef2f2; border:1px solid #fecaca; color:#b91c1c; }
 
-    .error {
-      background: #FEF2F2;
-      border: 1px solid #FECACA;
-      color: #DC2626;
-    }
-
-    .success {
-      background: #F0FDF4;
-      border: 1px solid #BBF7D0;
-      color: #166534;
-    }
-
-    /* Right Panel */
+    /* RIGHT PANEL ------------------------------------------ */
     .right-panel {
       flex: 1;
       background: #f4f1eb;
       padding: 60px;
+      font-family: 'Inter', sans-serif;
       display: flex;
       flex-direction: column;
-      justify-content: center;
       align-items: center;
+      position: relative;
     }
 
-    .demo-card {
-      max-width: 100%;
+    /* Top row: only dark toggle now */
+    .top-row {
+      max-width: 900px;
       width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      margin-bottom: 40px;
+      margin-top: -10px;
     }
 
-    /* Chat Box */
+    .theme-toggle {
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid #D1D5DB;
+      cursor: pointer;
+      font-size: 0.85rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+
+    .theme-toggle:hover { background:#f9fafb; }
+
+    /* CHAT -------------------------------------------------- */
     .chat {
-      background: white;
-      border-radius: 16px;
-      padding: 30px;
-      max-height: 300px;
-      overflow-y: auto;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-      width: 100%;
+      background: #fff; padding: 30px;
+      border-radius: 16px; width: 100%;
+      border: 1px solid #E5E7EB;
+      margin-bottom: 40px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
 
     .assistant-msg {
-      background: #F9FAFB;
+      background: #f9fafb;
       padding: 14px 18px;
-      margin-bottom: 15px;
       border-radius: 12px;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      color: #111827;
       border: 1px solid #E5E7EB;
+      margin-bottom: 15px;
       opacity: 0;
-      animation: fadeIn 0.6s ease forwards;
+      animation: fadeIn .6s forwards;
     }
 
-    .delay-1 { animation-delay: 0.8s; }
-    .delay-2 { animation-delay: 1.6s; }
-    .delay-3 { animation-delay: 2.4s; }
+    .delay-1 { animation-delay: .6s; }
+    .delay-2 { animation-delay: 1.2s; }
+    .delay-3 { animation-delay: 1.8s; }
 
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(6px); }
-      to   { opacity: 1; transform: translateY(0); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    @media (max-width: 768px) {
-      .page-wrapper {
-        flex-direction: column;
-      }
-      
-      .left-panel,
-      .right-panel {
-        flex: none;
-        padding: 40px 20px;
-      }
+    /* PRICING SECTION --------------------------------------- */
+    .pricing-section {
+      max-width: 900px;
+      width: 100%;
+    }
+
+    .pricing-header h2 { font-size: 1.5rem; margin-bottom: 6px; }
+    .pricing-subtitle { font-size: .9rem; color: #6b7280; margin-bottom: 20px; }
+
+    .pricing-grid {
+      display: flex; gap: 20px; flex-wrap: wrap;
+    }
+
+    .pricing-card {
+      background: #fff;
+      border-radius: 18px;
+      flex: 1;
+      padding: 24px;
+      min-width: 260px;
+      border: 1px solid #E5E7EB;
+      transition: .2s;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.15);
+    }
+
+    .pricing-card.featured {
+      border-color: #38bdf8;
+      box-shadow: 0 20px 45px rgba(56,189,248,0.25);
+    }
+
+    .pricing-plan-name {
+      text-transform: uppercase;
+      font-size: .75rem;
+      color: #6b7280;
+      letter-spacing: .1em;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .pricing-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; }
+    .pricing-price { font-size: 1.2rem; font-weight: 600; margin-bottom: 12px; }
+
+    .pricing-price span {
+      font-size: .9rem; color: #6b7280; margin-left: 4px;
+    }
+
+    .pricing-description {
+      font-size: .9rem; color: #6b7280; margin-bottom: 18px;
+      min-height: 40px;
+    }
+
+    .pricing-btn {
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: .92rem;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 20px;
+      display: block;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .outline { background: transparent; border: 1px solid #d1d5db; color: #111827; }
+    .outline:hover { background: #f3f4f6; }
+
+    .primary { background: #111827; color: #fff; border: none; }
+    .primary:hover { background: #000; }
+
+    .pricing-list {
+      list-style: none; font-size: .85rem; color: #4b5563;
+    }
+
+    .pricing-list li { display: flex; gap: 6px; margin-bottom: 6px; }
+    .pricing-check { color: #22c55e; }
+
+    /* FLOATING HELP WIDGET --------------------------------- */
+    .help-launcher {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 50;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: #111827;
+      color: #f9fafb;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    .help-launcher-icon {
+      width: 20px;
+      height: 20px;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    .help-launcher-arrow {
+      font-size: 1rem;
+      opacity: 0.7;
+    }
+
+    .help-panel {
+      position: fixed;
+      bottom: 72px;
+      right: 24px;
+      z-index: 40;
+      width: 220px;
+      padding: 16px;
+      border-radius: 16px;
+      background: #111827;
+      color: #f9fafb;
+      box-shadow: 0 16px 45px rgba(0,0,0,0.5);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      display: none;
+    }
+
+    .help-panel-title {
+      font-size: 0.9rem;
+      margin-bottom: 8px;
+      color: #e5e7eb;
+    }
+
+    .help-panel p {
+      font-size: 0.85rem;
+      color: #9ca3af;
+      margin-bottom: 12px;
+    }
+
+    .help-panel-button {
+      display: block;
+      width: 100%;
+      text-align: center;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: #f9fafb;
+      color: #020617;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    .help-panel-button:hover {
+      background: #e5e7eb;
+    }
+
+    /* DARK MODE --------------------------------------------- */
+    body.dark-mode { background: #020617; color: #e5e7eb; }
+    body.dark-mode .left-panel { background: #020617; }
+    body.dark-mode .left-card {
+      background: #020617; border: 1px solid #1f2937; color: #e5e7eb;
+    }
+    body.dark-mode .left-card input,
+    body.dark-mode .left-card textarea {
+      background: #020617; border-color: #374151; color: #e5e7eb;
+    }
+    body.dark-mode .right-panel { background: #020617; }
+    body.dark-mode .chat {
+      background: #020617; border-color: #1f2937;
+    }
+    body.dark-mode .assistant-msg {
+      background: #020617; border-color: #1f2937; color: #e5e7eb;
+    }
+    body.dark-mode .pricing-card {
+      background: #020617; border-color: #1f2937; color: #e5e7eb;
+    }
+    body.dark-mode .pricing-description,
+    body.dark-mode .pricing-list,
+    body.dark-mode .pricing-price span { color: #9ca3af; }
+    body.dark-mode .theme-toggle {
+      background: #020617; color: #e5e7eb; border-color: #4b5563;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.7);
+    }
+
+    body.dark-mode .help-launcher {
+      background:#020617;
+      box-shadow:0 10px 30px rgba(0,0,0,0.7);
+    }
+    body.dark-mode .help-panel {
+      background:#020617;
+      box-shadow:0 16px 45px rgba(0,0,0,0.9);
     }
   </style>
 
-  <!-- EmailJS SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 </head>
+
 <body>
-  <div class="page-wrapper">
-    <!-- Left Panel -->
-    <div class="left-panel">
-      <!-- Logo -->
-      <div class="logo-container">
-        <svg width="180" height="180" viewBox="0 0 375 375" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M279.169 62.5H95.8313L43.1625 187.5L95.8313 312.5H279.169L331.838 187.5L279.169 62.5Z" stroke="#1F2937" stroke-width="4" fill="transparent"/>
-          <text x="187.5" y="195.5" font-size="36" font-family="'Libre Baskerville', Georgia, serif" font-weight="700" text-anchor="middle" dominant-baseline="middle" fill="#1F2937">MAXXIA</text>
-        </svg>
-      </div>
 
-      <div class="left-card">
-        <h1>Build Your Custom AI Agent</h1>
-        <p>We help real estate teams build AI agents tailored to your leads and workflow. Book a consultation and tell us what tasks you want automated.</p>
-        
-        <!-- Consultation Form -->
-        <form id="consult-form" class="form">
-          <label for="name">Your Name</label>
-          <input name="user_name" type="text" id="name" placeholder="John Smith" required />
+<div class="page-wrapper">
 
-          <label for="email">Email</label>
-          <input name="user_email" type="email" id="email" placeholder="you@email.com" required />
-
-          <label for="tasks">What tasks should the AI agent help with?</label>
-          <textarea name="user_tasks" id="tasks" placeholder="e.g. lead qualification, booking appointments…" required></textarea>
-
-          <button type="button" id="consult-btn" class="btn">Book Consultation</button>
-        </form>
-
-        <!-- Confirmation Message -->
-        <div id="consult-confirm" class="msg" style="display:none;"></div>
-      </div>
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+    <div class="logo-container">
+      <svg width="180" height="180" viewBox="0 0 375 375" fill="none">
+        <path d="M279.169 62.5H95.8313L43.1625 187.5L95.8313 312.5H279.169L331.838 187.5L279.169 62.5Z" stroke="#1F2937" stroke-width="4"/>
+        <text x="187.5" y="195.5" font-size="36" font-family="Libre Baskerville" font-weight="700" text-anchor="middle" fill="#1F2937">MAXXIA</text>
+      </svg>
     </div>
 
-    <!-- Right Panel (Demo Chat) -->
-    <div class="right-panel">
-      <div class="demo-card">
-        <div class="chat">
-          <div class="assistant-msg delay-1">Are you looking to buy or sell?</div>
-          <div class="assistant-msg delay-2">What's your budget, preferred location, and timeframe?</div>
-          <div class="assistant-msg delay-3">Thanks! I've sent your info to your assigned agent and scheduled a call.</div>
-        </div>
+    <div class="left-card">
+      <h1>Build Your Custom AI Agent</h1>
+      <p>We help real estate teams automate lead qualification, follow-up, and booking — 24/7.</p>
+
+      <!-- Selected plan chip (hidden until a plan is set) -->
+      <div id="plan-chip" class="plan-chip" style="display:none;">
+        <span>Selected plan:</span>
+        <strong id="plan-chip-label"></strong>
       </div>
+
+      <form id="consult-form">
+        <label>Your Name</label>
+        <input type="text" id="name" required placeholder="John Smith">
+
+        <label>Email</label>
+        <input type="email" id="email" required placeholder="you@email.com">
+
+        <label>What tasks should the AI handle?</label>
+        <textarea id="tasks" required placeholder="Lead qualification, follow-up, booking…"></textarea>
+
+        <!-- hidden field for tracking which plan they came from -->
+        <input type="hidden" id="selected-plan">
+
+        <button id="consult-btn" class="btn" type="button">Book Consultation</button>
+      </form>
+
+      <div id="consult-confirm" class="msg" style="display:none;"></div>
     </div>
   </div>
 
-  <script>
-    // Initialize EmailJS when page loads
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log('🟢 Page loaded, initializing EmailJS');
-      
-      // Initialize EmailJS with your public key
-      emailjs.init("1RUFavRH4cgcsJDaJ");
-      
-      const btn = document.getElementById('consult-btn');
-      const form = document.getElementById('consult-form');
-      const confirmDiv = document.getElementById('consult-confirm');
-      
-      console.log('👆 consult-btn element:', btn);
-      console.log('📝 form element:', form);
-      
-      // Attach click handler
-      btn.addEventListener('click', function(e) {
-        e.preventDefault();
-        console.log('🔘 Book Consultation clicked');
-        
-        // Validate form before sending
-        const name = document.getElementById('name').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const tasks = document.getElementById('tasks').value.trim();
-        
-        if (!name || !email || !tasks) {
-          showMessage('Please fill out all required fields.', 'error');
-          return;
-        }
-        
-        // Basic email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-          showMessage('Please enter a valid email address.', 'error');
-          return;
-        }
-        
-        // Disable button and show loading state
-        btn.disabled = true;
-        btn.textContent = 'Sending...';
-        
-        const serviceID = 'service_6oeyi4x';
-        const templateID = 'template_32i8gwc';
-        
-        console.log('📨 Sending via EmailJS:', serviceID, templateID);
-        
-        // Create form data object with all template variables
-        const formData = {
-          user_name: name,
-          user_email: email,
-          user_tasks: tasks,
-          request_date: new Date().toLocaleDateString('en-US', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-          }),
-          to_name: 'Real Estate Team',
-          from_name: name
-        };
-        
-        console.log('📋 Form data:', formData);
-        
-        // Send email using EmailJS
-        emailjs.send(serviceID, templateID, formData)
-          .then(function(response) {
-            console.log('✅ Email sent successfully:', response.status, response.text);
-            
-            // Hide form and show success message
-            form.style.display = 'none';
-            showMessage('✅ Thanks! We\'ll reach out shortly to schedule your consultation.', 'success');
-            
-          })
-          .catch(function(error) {
-            console.error('🔴 EmailJS error:', error);
-            
-            // Re-enable button
-            btn.disabled = false;
-            btn.textContent = 'Book Consultation';
-            
-            // Show error message
-            let errorMessage = 'Oops—something went wrong. Please try again or contact us directly.';
-            if (error.text) {
-              errorMessage += ' Error: ' + error.text;
-            }
-            showMessage(errorMessage, 'error');
-          });
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <!-- Only dark mode toggle -->
+    <div class="top-row">
+      <button id="theme-toggle" class="theme-toggle">🌙 Dark Mode</button>
+    </div>
+
+    <!-- CHAT -->
+    <div class="chat">
+      <div class="assistant-msg delay-1">Are you looking to buy, sell, or invest?</div>
+      <div class="assistant-msg delay-2">What’s your budget and preferred area?</div>
+      <div class="assistant-msg delay-3">Perfect — I’ll connect you with your agent.</div>
+    </div>
+
+    <!-- PRICING -->
+    <section class="pricing-section" id="pricing">
+      <div class="pricing-header">
+        <h2>Simple plans for real estate teams.</h2>
+        <p class="pricing-subtitle">Choose what fits your workflow.</p>
+      </div>
+
+      <div class="pricing-grid">
+
+        <!-- Starter -->
+        <div class="pricing-card">
+          <div class="pricing-plan-name">Starter</div>
+          <div class="pricing-title">Solo Agent</div>
+          <div class="pricing-price">$297<span>/month</span></div>
+          <p class="pricing-description">Instant replies + basic automation.</p>
+
+          <a class="pricing-btn outline" href="starter.html">Learn More</a>
+
+          <ul class="pricing-list">
+            <li><span class="pricing-check">✓</span>Instant replies</li>
+            <li><span class="pricing-check">✓</span>Basic qualification</li>
+            <li><span class="pricing-check">✓</span>Booking automation</li>
+            <li><span class="pricing-check">✓</span>30-day nurture</li>
+          </ul>
+        </div>
+
+        <!-- Pro -->
+        <div class="pricing-card">
+          <div class="pricing-plan-name">Pro Team</div>
+          <div class="pricing-title">Teams</div>
+          <div class="pricing-price">Contact<span>for more information</span></div>
+          <p class="pricing-description">Stronger follow-up for growing teams.</p>
+
+          <a class="pricing-btn outline" href="pro.html">Contact Pro</a>
+
+          <ul class="pricing-list">
+            <li><span class="pricing-check">✓</span>Everything in Starter</li>
+            <li><span class="pricing-check">✓</span>90-day nurture</li>
+            <li><span class="pricing-check">✓</span>Lead revival</li>
+            <li><span class="pricing-check">✓</span>Buyer & seller flows</li>
+          </ul>
+        </div>
+
+        <!-- Growth (FEATURED) -->
+        <div class="pricing-card featured">
+          <div class="pricing-plan-name">Growth</div>
+          <div class="pricing-title">Teams & Brokerages</div>
+          <div class="pricing-price">Contact<span>for more information</span></div>
+          <p class="pricing-description">Advanced routing + team reporting.</p>
+
+          <a class="pricing-btn primary" href="growth.html">Contact Growth</a>
+
+          <ul class="pricing-list">
+            <li><span class="pricing-check">✓</span>Everything in Pro</li>
+            <li><span class="pricing-check">✓</span>Lead routing</li>
+            <li><span class="pricing-check">✓</span>Team dashboard</li>
+            <li><span class="pricing-check">✓</span>Onboarding support</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- FLOATING HELP WIDGET -->
+<div id="help-launcher" class="help-launcher">
+  <div class="help-launcher-icon">?</div>
+  <span>Help</span>
+  <span class="help-launcher-arrow">›</span>
+</div>
+
+<div id="help-panel" class="help-panel">
+  <div class="help-panel-title">Need help?</div>
+  <p>Have a question or want to talk through a setup? Open the help page.</p>
+  <a href="contact.html" class="help-panel-button">Help</a>
+</div>
+
+<script>
+  // Dark mode toggle
+  const toggle = document.getElementById("theme-toggle");
+  toggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+    toggle.textContent =
+      document.body.classList.contains("dark-mode")
+        ? "☀️ Light Mode"
+        : "🌙 Dark Mode";
+  });
+
+  // Helper: read ?plan= from URL
+  function getQueryParam(name) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(name);
+  }
+
+  // Initialize EmailJS
+  emailjs.init("1RUFavRH4cgcsJDaJ");
+
+  const btn = document.getElementById("consult-btn");
+  const form = document.getElementById("consult-form");
+  const confirmDiv = document.getElementById("consult-confirm");
+  const planChip = document.getElementById("plan-chip");
+  const planChipLabel = document.getElementById("plan-chip-label");
+  const selectedPlanInput = document.getElementById("selected-plan");
+
+  // On load: check if a plan was passed (for tracking)
+  document.addEventListener("DOMContentLoaded", () => {
+    const planFromUrl = getQueryParam("plan");
+    if (planFromUrl) {
+      const decoded = decodeURIComponent(planFromUrl).replace(/\+/g, " ");
+      planChipLabel.textContent = decoded;
+      planChip.style.display = "inline-flex";
+      selectedPlanInput.value = decoded;
+    }
+  });
+
+  btn.addEventListener("click", function () {
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const tasks = document.getElementById("tasks").value.trim();
+    const selectedPlan = selectedPlanInput.value || "Not specified";
+
+    if (!name || !email || !tasks) {
+      confirmDiv.textContent = "Please fill out all fields.";
+      confirmDiv.style.display = "block";
+      confirmDiv.className = "msg error";
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Sending...";
+
+    emailjs
+      .send("service_6oeyi4x", "template_32i8gwc", {
+        user_name: name,
+        user_email: email,
+        user_tasks: tasks,
+        selected_plan: selectedPlan,
+        request_source: "Main consult form"
+      })
+      .then(() => {
+        form.style.display = "none";
+        confirmDiv.textContent = "Thanks! We’ll reach out shortly.";
+        confirmDiv.className = "msg success";
+        confirmDiv.style.display = "block";
+      })
+      .catch(() => {
+        btn.disabled = false;
+        btn.textContent = "Book Consultation";
+        confirmDiv.textContent = "Something went wrong. Try again.";
+        confirmDiv.className = "msg error";
+        confirmDiv.style.display = "block";
       });
-      
-      function showMessage(message, type) {
-        confirmDiv.textContent = message;
-        confirmDiv.className = 'msg ' + type;
-        confirmDiv.style.display = 'block';
-        
-        // Scroll to message
-        confirmDiv.scrollIntoView({ behavior: 'smooth' });
-      }
-    });
-  </script>
+  });
+
+  // HELP WIDGET LOGIC
+  const helpLauncher = document.getElementById("help-launcher");
+  const helpPanel = document.getElementById("help-panel");
+
+  helpLauncher.addEventListener("click", () => {
+    const isOpen = helpPanel.style.display === "block";
+    helpPanel.style.display = isOpen ? "none" : "block";
+  });
+
+  // Close help panel when clicking outside
+  document.addEventListener("click", (e) => {
+    if (
+      !helpPanel.contains(e.target) &&
+      !helpLauncher.contains(e.target)
+    ) {
+      helpPanel.style.display = "none";
+    }
+  });
+</script>
+
 </body>
-</html> 
+</html>
