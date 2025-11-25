@@ -162,7 +162,9 @@
     .pricing-subtitle { font-size: .9rem; color: #6b7280; margin-bottom: 20px; }
 
     .pricing-grid {
-      display: flex; gap: 20px; flex-wrap: wrap;
+      display: flex;
+      gap: 20px;
+      flex-wrap: nowrap;           /* ✅ keep all three on one row */
     }
 
     .pricing-card {
@@ -170,7 +172,7 @@
       border-radius: 18px;
       flex: 1;
       padding: 24px;
-      min-width: 260px;
+      min-width: 0;                /* ✅ allow cards to shrink instead of wrapping */
       border: 1px solid #E5E7EB;
       transition: .2s;
       box-shadow: 0 8px 24px rgba(0,0,0,0.08);
@@ -202,9 +204,14 @@
       font-size: .9rem; color: #6b7280; margin-left: 4px;
     }
 
+    /* keep descriptions same visual height so cards look even */
     .pricing-description {
-      font-size: .9rem; color: #6b7280; margin-bottom: 18px;
-      min-height: 40px;
+      font-size: .9rem;
+      color: #6b7280;
+      margin-bottom: 18px;
+      line-height: 1.5;
+      height: 3em;              /* ~2 lines */
+      overflow-wrap: break-word;
     }
 
     .pricing-btn {
@@ -347,6 +354,42 @@
     body.dark-mode .help-panel {
       background:#020617;
       box-shadow:0 16px 45px rgba(0,0,0,0.9);
+    }
+
+    /* ===== RESPONSIVE LAYOUT FIXES ===== */
+
+    /* Stack panels vertically on tablets / phones */
+    @media (max-width: 1024px) {
+      body {
+        height: auto;
+      }
+
+      .page-wrapper {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .left-panel,
+      .right-panel {
+        flex: none;
+        width: 100%;
+        padding: 40px 20px;
+      }
+
+      .right-panel {
+        padding-top: 10px;
+      }
+    }
+
+    /* On real small screens, stack pricing cards vertically (no smush) */
+    @media (max-width: 800px) {
+      .pricing-grid {
+        flex-direction: column;
+      }
+
+      .pricing-card {
+        width: 100%;
+      }
     }
   </style>
 
